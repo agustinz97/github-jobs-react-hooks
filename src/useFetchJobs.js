@@ -35,7 +35,6 @@ export default function useFetchJobs(params, page) {
         const cancelToken = axios.CancelToken.source()
 
         dispatch({ type: ACTIONS.MAKE_REQUEST })
-
         axios
             .get(BASE_URL, {
                 cancelToken: cancelToken.token,
@@ -47,18 +46,15 @@ export default function useFetchJobs(params, page) {
                     payload: { jobs: res.data },
                 })
             })
-            .catch(e => {
-                if (axios.isCancel(e)) return
-                dispatch({
-                    type: ACTIONS.ERROR,
-                    payload: { error: e },
-                })
+            .catch(err => {
+                if (axios.isCancel(err)) return
+                dispatch({ type: ACTIONS.ERROR, payload: { error: err } })
             })
 
         return () => {
             cancelToken.cancel()
         }
-    }, [page, params])
+    }, [params, page])
 
     return state
 }
